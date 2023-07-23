@@ -14,7 +14,7 @@ class Router {
   }
 
   match(method, url, callback) {
-    if (this.request.url === url && this.request.method === method) {
+    if (this.request.url === url && (this.request.method === method) ) {
       this.found = true;
       let response = null;  
       let body = '';
@@ -23,7 +23,7 @@ class Router {
       })
       this.request.on('end', () => {
         try {
-          let result = JSON.parse(body) ?? ''
+          let result = body != '' ? JSON.parse(body) : ''
           response = callback({...this.request, body: result}, this.response);
         } catch (error) {          
           this.response.writeHead(500, {'Content-Type': 'application/json'});
@@ -52,7 +52,7 @@ class Router {
 
   notFound() {
     if (!this.found) {
-      this.response.writeHead(200, {'Content-Type': 'application/json'});
+      this.response.writeHead(404, {'Content-Type': 'application/json'});
       console.log(getRouteLog(this.request));
       return this.response.end(JSON.stringify({status: 404, message: 'Not Found'}));
     }

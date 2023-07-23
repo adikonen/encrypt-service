@@ -1,5 +1,5 @@
 const http = require('http')
-const { mapObject } = require('../utils/func')
+const { mapObject, ableToDecrypt } = require('../utils/func')
 const { encryptor } = require('../utils/encryptor')
 
 function index(request, response) {
@@ -37,11 +37,15 @@ function encrypt(request, response) {
  */
 function decrypt(request, response) {
   const {data} = request.body;
-  console.log(data)
-  if (Array.isArray(data)) {
-    return data.map((item) => mapObject(item, (value) => encryptor.decrypt(value)));
+  const action = (item) => {
+    return mapObject(item, (value) => {
+      return ableToDecrypt(value) ? encryptor.decrypt(value) : value
+    })
   }
-  return mapObject(data, (value, key) => encryptor.decrypt(value));
+  if (Array.isArray(data)) {
+    return data.map((item) => action(item));
+  }
+  return action(data);
 }
 
 

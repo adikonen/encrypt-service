@@ -38,7 +38,13 @@ function getRouteLog(request) {
   return `[${request.method}] ${request.url} ${new Date().toLocaleString()} from ${request.headers.origin} 😲`;
 }
 
+function ableToDecrypt(value) {
+  const length = (Number(config.encrypt_prefix_length) + Number(config.encrypt_suffix_length))
+  return typeof value === 'string' && value.length > length 
+}
+
 module.exports = {
   mapObject,
   getRouteLog,
+  ableToDecrypt
 }

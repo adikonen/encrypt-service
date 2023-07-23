@@ -4,9 +4,17 @@ const config  = require('./config/main');
 const { Router } = require('./utils/router');
 
 const server = http.createServer((req,res) => {
-  res.setHeader('Access-Control-Allow-Origin', ['http://localhost:5173']);
-  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   const router = new Router(req, res);
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
 
   router.get('/', handler.index);
   router.post('/encrypt', handler.encrypt);
