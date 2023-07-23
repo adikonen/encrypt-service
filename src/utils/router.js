@@ -23,7 +23,7 @@ class Router {
       })
       this.request.on('end', () => {
         try {
-          let result = JSON.parse(body)
+          let result = JSON.parse(body) ?? ''
           response = callback({...this.request, body: result}, this.response);
         } catch (error) {          
           this.response.writeHead(500, {'Content-Type': 'application/json'});

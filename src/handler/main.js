@@ -36,10 +36,12 @@ function encrypt(request, response) {
  * @param {http.ServerResponse} response 
  */
 function decrypt(request, response) {
-  if (Array.isArray(request.body)) {
-    return request.body.map((item) => mapObject(item, (value) => encryptor.decrypt(value)));
+  const {data} = request.body;
+  console.log(data)
+  if (Array.isArray(data)) {
+    return data.map((item) => mapObject(item, (value) => encryptor.decrypt(value)));
   }
-  return mapObject(request.body, (value, key) => encryptor.decrypt(value));
+  return mapObject(data, (value, key) => encryptor.decrypt(value));
 }
 
 
