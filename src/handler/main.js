@@ -1,6 +1,7 @@
-const http = require('http')
+const http = require('node:http')
 const { mapObject, ableToDecrypt } = require('../utils/func')
-const { encryptor } = require('../utils/encryptor')
+const { encryptor } = require('../utils/encryptor');
+const config = require('../config/main');
 
 function index(request, response) {
   return {
@@ -23,10 +24,11 @@ function index(request, response) {
  * @param {http.ServerResponse} response 
  */
 function encrypt(request, response) {
-  if (Array.isArray(request.body)) {
-    return request.body.map((item) => mapObject(item, (value) => encryptor.encrypt(value)));
+  const { data, ignore = null } = request.body;
+  if (Array.isArray(data)) {
+    return data.map((item) => mapObject(item, (value) => encryptor.encrypt(value), {except: ignore}));
   }
-  return mapObject(request.body, (value, key) => encryptor.encrypt(value));
+  return mapObject(data, (value, key) => encryptor.encrypt(value), {except: ignore});
 }
 
 /**
@@ -36,16 +38,16 @@ function encrypt(request, response) {
  * @param {http.ServerResponse} response 
  */
 function decrypt(request, response) {
-  const {data} = request.body;
   const action = (item) => {
     return mapObject(item, (value) => {
+      console.log(config)
       return ableToDecrypt(value) ? encryptor.decrypt(value) : value
     })
   }
-  if (Array.isArray(data)) {
-    return data.map((item) => action(item));
+  if (Array.isArray(request.body)) {
+    return request.body.map((item) => action(item));
   }
-  return action(data);
+  return action(request.body);
 }
 
 

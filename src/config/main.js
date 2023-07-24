@@ -7,6 +7,7 @@ const config = {
   encrypt_salt: process.env.ENCRYPT_SALT ?? 'asin sekali🧂😁',
   encrypt_prefix_length: process.env.ENCRYPT_PREFIX_LENGTH ?? 2,
   encrypt_suffix_length: process.env.ENCRYPT_SUFFIX_LENGTH ?? 4,
+  encrypt_algorithm: process.env.ENCRYPT_ALGORITHM ?? 'aes-192-cbc'
 }
 
 module.exports = config
