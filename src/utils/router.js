@@ -1,5 +1,6 @@
 const http = require('node:http');
 const { getRouteLog } = require('./func');
+const { ClientError } = require('../error/client-error');
 
 class Router {
 
@@ -25,9 +26,11 @@ class Router {
         try {
           let result = body != '' ? JSON.parse(body) : ''
           response = callback({...this.request, body: result}, this.response);
-        } catch (error) {          
-          this.response.writeHead(500, {'Content-Type': 'application/json'});
-          this.response.end(JSON.stringify({status: 500, message: error.message}));
+        } catch (error) {         
+          let code = null;
+          code = error instanceof ClientError ? 400 : 500;
+          this.response.writeHead(code, {'Content-Type': 'application/json'});
+          this.response.end(JSON.stringify({status: code, message: error.message}));
           console.error(error.message);
           return ;
         } finally {

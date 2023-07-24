@@ -1,7 +1,7 @@
 const http = require('node:http')
 const { mapObject, ableToDecrypt } = require('../utils/func')
 const { encryptor } = require('../utils/encryptor');
-const config = require('../config/main');
+const { ClientError } = require('../error/client-error');
 
 function index(request, response) {
   return {
@@ -25,6 +25,11 @@ function index(request, response) {
  */
 function encrypt(request, response) {
   const { data, ignore = null } = request.body;
+
+  if (data == null) {
+    throw new ClientError('wrap your body request to data property, ex: {data: {something}}')
+  }
+
   if (Array.isArray(data)) {
     return data.map((item) => mapObject(item, (value) => encryptor.encrypt(value), {except: ignore}));
   }
@@ -38,16 +43,21 @@ function encrypt(request, response) {
  * @param {http.ServerResponse} response 
  */
 function decrypt(request, response) {
+  const { data, ignore = null } = request.body;
+
+  if (data == null) {
+    throw new ClientError('wrap your body request to data property, ex: {data: {something}}')
+  }
+  
   const action = (item) => {
     return mapObject(item, (value) => {
-      console.log(config)
       return ableToDecrypt(value) ? encryptor.decrypt(value) : value
-    })
+    }, {except: ignore})
   }
-  if (Array.isArray(request.body)) {
-    return request.body.map((item) => action(item));
+  if (Array.isArray(data)) {
+    return data.map((item) => action(item));
   }
-  return action(request.body);
+  return action(data);
 }
 
 
