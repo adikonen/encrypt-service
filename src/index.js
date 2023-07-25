@@ -4,7 +4,7 @@ const config  = require('./config/main');
 const { Router } = require('./utils/router');
 
 const server = http.createServer((req,res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', '*');
 
