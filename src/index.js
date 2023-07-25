@@ -10,11 +10,11 @@ const server = http.createServer((req,res) => {
 
   const router = new Router(req, res);
 
-  // if (req.method === 'OPTIONS') {
-  //   res.writeHead(200);
-  //   res.end();
-  //   return;
-  // }
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
 
   router.get('/', handler.index);
   router.post('/encrypt', handler.encrypt);
