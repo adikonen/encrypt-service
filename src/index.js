@@ -13,7 +13,7 @@ const server = http.createServer((req,res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
-    return;
+    return ;
   }
 
   router.get('/', handler.index);
